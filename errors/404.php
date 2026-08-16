@@ -1,7 +1,7 @@
 <?php
 //This file belongs to the BookFind project.
 //
-//BookFind is distributed under the terms of the MIT software license.
+//BookFind is distributed under the terms of the GNU Affero General Public License v3.0.
 //
 //Copyright (C) 2025 Chromared
 ?>
@@ -10,32 +10,35 @@
   require '../actions/functions/sessionInit.php';
 } ?>
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="<?php include '../actions/users/decodeThemeAction.php'; ?>">
+<html lang="en" data-theme="<?php include '../actions/users/decodeThemeAction.php'; ?>">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Erreur 404</title>
+  <title>Error 404</title>
   <?php include '../includes/header.php'; ?>
 </head>
 
-<body class="d-flex flex-column min-vh-100">
-  <div class="container text-center mt-5">
-    <h1 class="mt-3">Erreur 404</h1>
-    <img src="../assets/iconesite.png" class="img-fluid w-25 display-4" />
-    <h3 class="mt-3">La page que vous recherchez n'existe pas.</h3>
-  </div>
-  <div class="container mt-3">
-    <form method="GET" action="books.php">
-      <div class="input-group mb-3">
-        <input type="text" name="s" class="form-control" placeholder="Rechercher un livre" />
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
-          <i class="bi bi-search"></i>
-          Rechercher
-        </button>
+<body>
+  <main class="page">
+    <div class="container">
+      <section class="hero">
+        <h1 class="hero__title">Error 404</h1>
+        <p class="hero__text">The page you are looking for does not exist.</p>
+      </section>
+      <div class="narrow mt-4">
+        <form method="GET" action="books.php">
+          <div class="input-group">
+            <input type="text" name="s" class="input" placeholder="Search for a book" aria-label="Search for a book" />
+            <button class="btn btn--outline" type="submit">
+              <svg class="icon"><use href="#i-search"/></svg>
+              Search
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
+    </div>
+  </main>
   <?php include '../includes/footer.php'; ?>
 </body>
 

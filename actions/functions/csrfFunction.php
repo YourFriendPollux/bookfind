@@ -22,7 +22,7 @@ if (!function_exists('csrf_verify')) {
         if (session_status() !== PHP_SESSION_ACTIVE) session_start();
         if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'])) {
             http_response_code(403);
-            die('Jeton CSRF invalide.');
+            die('Invalid CSRF token.');
         }
     }
 }

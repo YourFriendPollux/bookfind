@@ -1,17 +1,17 @@
 <?php require_once __DIR__ . '/../../../actions/functions/sessionInit.php'; if (isset($_POST["regenUsernames"])) {
-    $selectNames = $bdd->query('SELECT id, nom, prenom FROM users');
+    $selectNames = $db->query('SELECT id, last_name, first_name FROM users');
     $i = 0;
 
     while ($userInfos = $selectNames->fetch()) {
 
-        $newUsername = username($userInfos['prenom'], $userInfos['nom']);
-        $updateUsername = $bdd->prepare('UPDATE users SET username = ? WHERE id = ?');
+        $newUsername = username($userInfos['first_name'], $userInfos['last_name']);
+        $updateUsername = $db->prepare('UPDATE users SET username = ? WHERE id = ?');
         $updateUsername->execute(array($newUsername, $userInfos['id']));
 
         $i += 1;
     }
 
-    SaveLog($bdd, $_SERVER['REQUEST_URI'], 'Régénération des noms d\'utilisateur', 'Le nom d\'utilisateur de ' . $i . ' utilisateurs a été régénéré.');
+    SaveLog($db, $_SERVER['REQUEST_URI'], 'Username regeneration', 'The username of ' . $i . ' users was regenerated.');
 
-    $msgRegenUsernames = 'Le nom d\'utilisateur de ' . $i . ' utilisateurs a été régénéré.';
+    $msgRegenUsernames = 'The username of ' . $i . ' users was regenerated.';
 }

@@ -30,10 +30,10 @@ if (!headers_sent()) {
     $csp_nonce = bin2hex(random_bytes(16));
     // Store the nonce in session so templates/views can embed it in script tags
     $_SESSION['csp_nonce'] = $csp_nonce;
-    $script_src = "'self' 'nonce-{$csp_nonce}' https://code.jquery.com https://cdn.jsdelivr.net https://cdn.jsdelivr.net/npm";
-    $style_src = "'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com";
-    $connect_src = "'self' https://cdn.jsdelivr.net https://code.jquery.com";
-    header("Content-Security-Policy: default-src 'self'; script-src {$script_src}; style-src {$style_src}; img-src 'self' data:; font-src https://cdn.jsdelivr.net; connect-src {$connect_src};");
+    $script_src = "'self' 'nonce-{$csp_nonce}'";
+    $style_src = "'self' 'unsafe-inline' https://fonts.googleapis.com";
+    $connect_src = "'self' https://www.googleapis.com";
+    header("Content-Security-Policy: default-src 'self'; script-src {$script_src}; style-src {$style_src}; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src {$connect_src};");
 }
 
 // Load CSRF helper functions (used to verify tokens in forms)
