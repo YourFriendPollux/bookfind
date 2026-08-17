@@ -78,6 +78,9 @@ $topbarTitle = $titles[$currentPage] ?? 'Management';
   </nav>
 
   <div class="sidebar__foot">
+    <a class="sidebar__link" href="../settings.php?id=<?= htmlspecialchars($_SESSION['id']); ?>">
+      <svg class="icon"><use href="#i-settings"/></svg>Settings
+    </a>
     <a class="sidebar__link" href="../index.php">
       <svg class="icon"><use href="#i-arrow-down"/></svg>Exit management
     </a>

@@ -9,9 +9,9 @@
 <?php include __DIR__ . '/icons.php'; ?>
 
 <?php
-// Footer shown only on the homepage, and only for logged-out visitors.
-$footerScript = trim($_SERVER['SCRIPT_NAME'] ?? '', '/');
-$showFooter = ($footerScript === 'index.php') && !isset($_SESSION['auth']);
+// Footer shown on the homepage for every visitor (root or /bookfind/ install).
+$footerScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
+$showFooter = ($footerScript === 'index.php');
 ?>
 
 <?php if ($showFooter) { ?>

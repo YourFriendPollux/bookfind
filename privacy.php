@@ -14,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy policy</title>
+    <title>BookFind — Privacy policy</title>
     <?php include 'includes/header.php'; ?>
 </head>
 

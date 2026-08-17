@@ -18,7 +18,7 @@ require '../actions/books/showOneBookAction.php'; ?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Save a book</title>
+  <title>BookFind — Update a book</title>
   <?php include '../includes/header.php'; ?>
 </head>
 

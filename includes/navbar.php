@@ -26,16 +26,16 @@ $isLanding = ($currentPage == 'index.php'); ?>
         <?php } ?>
       <?php } ?>
       <?php if (!isset($_SESSION['auth'])) { ?>
-        <a class="navbar__link <?php if ($currentPage == 'login.php') { echo 'is-active'; } ?>" href="login.php">Sign in</a>
+        <a class="navbar__link navbar__link--auth <?php if ($currentPage == 'login.php') { echo 'is-active'; } ?>" href="login.php">Sign in</a>
         <?php if (file_exists('actions/users/signupAction.php') && file_exists('signup.php')) { ?>
-          <a class="navbar__link navbar__link--cta <?php if ($currentPage == 'signup.php') { echo 'is-active'; } ?>" href="signup.php">Sign up</a>
+          <a class="navbar__link navbar__link--cta navbar__link--auth <?php if ($currentPage == 'signup.php') { echo 'is-active'; } ?>" href="signup.php">Sign up</a>
         <?php } ?>
-      <?php } elseif (!$isLanding) { ?>
+      <?php } elseif (isset($_SESSION['auth'])) { ?>
         <a class="navbar__link <?php if ($currentPage == 'profile.php') { echo 'is-active'; } ?>" href="profile.php?id=<?= htmlspecialchars($_SESSION['id']); ?>">Profile</a>
         <a class="navbar__link <?php if ($currentPage == 'settings.php') { echo 'is-active'; } ?>" href="settings.php?id=<?= htmlspecialchars($_SESSION['id']); ?>">Settings</a>
         <a class="navbar__link <?php if ($currentPage == 'loans.php') { echo 'is-active'; } ?>" href="loans.php?id=<?= htmlspecialchars($_SESSION['id']); ?>">Loans</a>
       <?php }
-      if (isset($_SESSION['auth']) && $_SESSION['grade'] != 0 && !$isLanding) { ?>
+      if (isset($_SESSION['auth']) && $_SESSION['grade'] != 0) { ?>
         <a class="navbar__link" href="gestion/index.php">Management</a>
       <?php } ?>
     </div>

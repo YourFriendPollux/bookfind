@@ -25,7 +25,7 @@ $dateIn30Days = date('Y-m-d', strtotime('+30 days')); ?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit a loan</title>
+  <title>BookFind — Edit a loan</title>
   <?php include '../includes/header.php'; ?>
 </head>
 

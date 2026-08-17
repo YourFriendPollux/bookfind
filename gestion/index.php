@@ -18,7 +18,7 @@ require 'actions/users/securityAdminAction.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management home</title>
+    <title>BookFind — Management</title>
     <?php include '../includes/header.php'; ?>
 </head>
 
@@ -133,7 +133,7 @@ require 'actions/users/securityAdminAction.php';
             </div>
 
             <!-- Loan status (pie) -->
-            <div class="card chart">
+            <div class="card chart chart--center">
                 <div class="card__header">
                     <svg class="icon"><use href="#i-info"/></svg>
                     <span>Loan distribution by status</span>
@@ -310,6 +310,43 @@ require 'actions/users/securityAdminAction.php';
             el.innerHTML = html;
         }
 
+        // Shared hover tooltip: shows label + count for the nearest data point
+        function chartTip(container, svg, items) {
+            var tip = document.createElement('div');
+            tip.className = 'chart-tip';
+            tip.setAttribute('role', 'tooltip');
+            container.appendChild(tip);
+            var W = svg.viewBox.baseVal.width, H = svg.viewBox.baseVal.height;
+            svg.addEventListener('mousemove', function(ev) {
+                var rect = svg.getBoundingClientRect();
+                var mx = (ev.clientX - rect.left) / rect.width * W;
+                var my = (ev.clientY - rect.top) / rect.height * H;
+                var best = 0, bd = Infinity, i;
+                for (i = 0; i < items.length; i++) {
+                    var dx = items[i].x - mx, dy = items[i].y - my;
+                    var d = dx * dx + dy * dy;
+                    if (d < bd) { bd = d; best = i; }
+                }
+                var p = items[best];
+                tip.textContent = p.label + ' : ' + p.value;
+                tip.classList.add('is-visible');
+                var px = p.x / W * rect.width;
+                var py = p.y / H * rect.height;
+                var left = Math.max(2, Math.min(rect.width - tip.offsetWidth - 2, px - tip.offsetWidth / 2));
+                var top = py - tip.offsetHeight - 10;
+                if (top < 0) { top = py + 10; }
+                tip.style.left = left + 'px';
+                tip.style.top = top + 'px';
+                var dots = svg.querySelectorAll('.chart-dot');
+                for (i = 0; i < dots.length; i++) { dots[i].classList.toggle('is-active', i === best); }
+            });
+            svg.addEventListener('mouseleave', function() {
+                tip.classList.remove('is-visible');
+                var dots = svg.querySelectorAll('.chart-dot');
+                for (var i = 0; i < dots.length; i++) { dots[i].classList.remove('is-active'); }
+            });
+        }
+
         // Line chart (SVG)
         function renderLine(el, rows) {
             var months = lastMonths(12);
@@ -330,11 +367,12 @@ require 'actions/users/securityAdminAction.php';
                 + '<defs><linearGradient id="line-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--primary)" stop-opacity="0.28"/><stop offset="100%" stop-color="var(--primary)" stop-opacity="0.02"/></linearGradient></defs>'
                 + '<path d="' + area + '" fill="url(#line-fill)"/>'
                 + '<polyline points="' + line + '" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
-                + pts.map(function(p) { return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="2.6" fill="var(--surface-1)" stroke="var(--primary)" stroke-width="1.6"><title>' + esc(p.v.label) + ' : ' + p.v.value + '</title></circle>'; }).join('')
+                + pts.map(function(p) { return '<circle class="chart-dot" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="3" fill="var(--surface-1)" stroke="var(--primary)" stroke-width="1.6"></circle>'; }).join('')
                 + '</svg>'
                 + '<div class="line-labels">' + values.map(function(v) { return '<span>' + esc(v.label) + '</span>'; }).join('') + '</div>'
                 + '</div>';
             el.innerHTML = html;
+            chartTip(el.querySelector('.line-wrap'), el.querySelector('.line-chart'), pts.map(function(p) { return { x: p.x, y: p.y, label: p.v.label, value: p.v.value }; }));
         }
 
         // Pie chart (SVG, slices)
@@ -347,9 +385,12 @@ require 'actions/users/securityAdminAction.php';
             if (total === 0) { el.innerHTML = '<p class="chart-empty">No data.</p>'; return; }
             var cx = 80, cy = 80, r = 72;
             var acc = 0;
+            var slices = [];
             var paths = items.map(function(item, i) {
+                var nb = parseInt(item.nb, 10) || 0;
+                if (nb <= 0) { return ''; }
                 var start = acc / total;
-                acc += parseInt(item.nb, 10) || 0;
+                acc += nb;
                 var end = acc / total;
                 var a0 = 2 * Math.PI * start - Math.PI / 2;
                 var a1 = 2 * Math.PI * end - Math.PI / 2;
@@ -358,9 +399,17 @@ require 'actions/users/securityAdminAction.php';
                 var x2 = cx + r * Math.cos(a1);
                 var y2 = cy + r * Math.sin(a1);
                 var large = (end - start) > 0.5 ? 1 : 0;
-                var d = 'M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2)
-                    + ' A' + r + ',' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z';
-                return '<path d="' + d + '" fill="' + PALETTE[i % PALETTE.length] + '" stroke="var(--surface-1)" stroke-width="1.5"><title>' + esc(item.label) + ' : ' + item.nb + '</title></path>';
+                var d;
+                if ((end - start) >= 0.99999) {
+                    // A single slice covering the whole pie: draw a full circle
+                    d = 'M' + (cx - r) + ',' + cy + ' A' + r + ',' + r + ' 0 1 1 ' + (cx + r) + ',' + cy + ' A' + r + ',' + r + ' 0 1 1 ' + (cx - r) + ',' + cy + ' Z';
+                } else {
+                    d = 'M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2)
+                        + ' A' + r + ',' + r + ' 0 ' + large + ' 1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z';
+                }
+                var mid = (a0 + a1) / 2;
+                slices.push({ x: cx + r * 0.62 * Math.cos(mid), y: cy + r * 0.62 * Math.sin(mid), label: item.label, value: nb });
+                return '<path d="' + d + '" fill="' + PALETTE[i % PALETTE.length] + '" stroke="var(--surface-1)" stroke-width="1.5"></path>';
             }).join('');
             var legend = items.map(function(item, i) {
                 var pct = Math.round(((parseInt(item.nb, 10) || 0) / total) * 100);
@@ -371,6 +420,7 @@ require 'actions/users/securityAdminAction.php';
             }).join('');
             el.innerHTML = '<div class="pie-wrap"><svg viewBox="0 0 160 160" class="pie" role="img" aria-label="Pie chart">' + paths + '</svg></div>'
                 + '<ul class="donut__legend">' + legend + '</ul>';
+            chartTip(el.querySelector('.pie-wrap'), el.querySelector('.pie-wrap svg'), slices);
         }
 
         // Gauge (SVG, half-circle)
@@ -391,7 +441,7 @@ require 'actions/users/securityAdminAction.php';
             var html = '<div class="gauge-wrap">'
                 + '<svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Rate of books on loan : ' + pct + ' %">'
                 + '<path d="' + arcPath(Math.PI, 0) + '" fill="none" stroke="var(--surface-3)" stroke-width="14" stroke-linecap="round"/>'
-                + (sweep > 0 ? '<path d="' + arcPath(Math.PI, Math.PI - sweep) + '" fill="none" stroke="var(--primary)" stroke-width="14" stroke-linecap="round"/>' : '')
+                + (sweep > 0 ? '<path d="' + arcPath(Math.PI, Math.PI + sweep) + '" fill="none" stroke="var(--primary)" stroke-width="14" stroke-linecap="round"/>' : '')
                 + '</svg>'
                 + '<div class="gauge__value">' + pct + '%</div>'
                 + '<div class="gauge__meta">' + value + ' of ' + total + ' books on loan</div>'

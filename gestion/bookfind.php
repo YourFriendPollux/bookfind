@@ -50,7 +50,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage BookFind</title>
+    <title>BookFind — Administration</title>
     <?php include '../includes/header.php'; ?>
 </head>
 

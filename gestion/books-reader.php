@@ -20,7 +20,7 @@ require '../actions/functions/colorLoanDateFunction.php'; ?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book information</title>
+  <title>BookFind — Book information</title>
   <?php include '../includes/header.php'; ?>
 </head>
 
