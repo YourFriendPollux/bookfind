@@ -12,6 +12,7 @@ require 'actions/functions/conversionDate.php';
 require 'actions/functions/conversionDateHour.php';
 require 'actions/functions/colorDateEmpruntFunction.php'; ?>
 <!DOCTYPE html>
+<html lang="fr" data-bs-theme="<?php include 'actions/users/decodeThemeAction.php'; ?>">
 
 <head>
   <meta charset="UTF-8">
@@ -29,8 +30,8 @@ require 'actions/functions/colorDateEmpruntFunction.php'; ?>
         <input type="text" name="s" class="form-control" value="<?php if (isset($_GET['s']) and !empty($_GET['s'])) {
                                                                   echo htmlspecialchars($_GET['s']);
                                                                 } ?>" placeholder="Rechercher un livre" <?php if (!isset($_GET['s']) or empty($_GET['s'])) {
-                                                                                                                                                                                                echo 'autofocus';
-                                                                                                                                                                                              } ?> />
+                                                                                                          echo 'autofocus';
+                                                                                                        } ?> />
         <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
           <i class="bi bi-search"></i>
           Rechercher
