@@ -11,7 +11,7 @@
 <?php
 // Footer shown on the homepage for every visitor (root or /bookfind/ install).
 $footerScript = basename($_SERVER['SCRIPT_NAME'] ?? '');
-$showFooter = ($footerScript === 'index.php');
+$showFooter = ($footerScript === 'index.php' OR $footerScript === 'rules.php' OR $footerScript === 'privacy.php');
 ?>
 
 <?php if ($showFooter) { ?>
