@@ -8,7 +8,7 @@
 
 <?php $currentPage = basename($_SERVER['SCRIPT_NAME']);
 // Landing page: minimal navbar (logo + sign in/sign up only)
-$isLanding = ($currentPage == 'index.php'); ?>
+// $isLanding = ($currentPage == 'index.php'); ?>
 <nav class="navbar">
   <div class="navbar__inner">
     <a class="navbar__brand" href="index.php">
@@ -19,12 +19,12 @@ $isLanding = ($currentPage == 'index.php'); ?>
       <svg class="icon"><use href="#i-menu"/></svg>
     </button>
     <div class="navbar__nav" id="navbarNav">
-      <?php if (!$isLanding) { ?>
+      <?php // if (!$isLanding) { ?>
         <a class="navbar__link <?php if ($currentPage == 'books.php') { echo 'is-active'; } ?>" href="books.php">Search</a>
         <?php if (file_exists('configuration.php')) { ?>
           <a class="navbar__link <?php if ($currentPage == 'configuration.php') { echo 'is-active'; } ?>" href="configuration.php">Configure</a>
         <?php } ?>
-      <?php } ?>
+      <?php // } ?>
       <?php if (!isset($_SESSION['auth'])) { ?>
         <a class="navbar__link navbar__link--auth <?php if ($currentPage == 'login.php') { echo 'is-active'; } ?>" href="login.php">Sign in</a>
         <?php if (file_exists('actions/users/signupAction.php') && file_exists('signup.php')) { ?>
