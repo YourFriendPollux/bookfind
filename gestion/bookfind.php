@@ -8,6 +8,7 @@
 
 <?php
 require '../actions/database.php';
+require_once '../actions/functions/gettextFunction.php';
 require '../actions/users/securityAction.php';
 
 // Centralized access check before loading sensitive actions
@@ -113,6 +114,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
             <!-- Add a class -->
             <form method="POST" autocomplete="off" id="addClass">
+                <?= csrf_field(); ?>
                 <div class="card">
                     <div class="card__body">
                         <h1 class="card__title">Add a class</h1>
@@ -144,6 +146,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
             <!-- Edit a class -->
             <form method="POST" autocomplete="off" id="updateClass">
+                <?= csrf_field(); ?>
                 <div class="card">
                     <div class="card__body">
                         <h2 class="card__title">Edit a class</h2>
@@ -165,7 +168,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                         <div class="field">
                             <label for="existingClass" class="label">Existing class*</label>
                             <select name="existingClass" id="existingClass" class="select" required>
-                                <option value="">--- Select a class ---</option>
+                                <option value=""><?php echo _('--- Select a class ---'); ?></option>
                                 <?php include '../actions/functions/getClassesAndOptions.php'; ?>
                             </select>
                         </div>
@@ -182,6 +185,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
             <!-- Delete a class -->
             <form method="POST" autocomplete="off" id="deleteClass">
+                <?= csrf_field(); ?>
                 <div class="card">
                     <div class="card__body">
                         <h2 class="card__title">Delete a class</h2>
@@ -203,7 +207,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                         <div class="field">
                             <label for="existingClass2" class="label">Class to delete*</label>
                             <select name="existingClass2" id="existingClass2" class="select" required>
-                                <option value="">--- Select a class ---</option>
+                                <option value=""><?php echo _('--- Select a class ---'); ?></option>
                                 <?php include '../actions/functions/getClassesAndOptions.php'; ?>
                             </select>
                         </div>
@@ -216,16 +220,17 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
         <?php } elseif (isset($_GET['tab']) and $_GET['tab'] == 'users') { ?>
             <!-- Import users via CSV -->
             <form method="POST" enctype="multipart/form-data" autocomplete="off" action="bookfind.php?tab=users">
+                <?= csrf_field(); ?>
                 <div class="card">
                     <div class="card__body">
-                        <h1 class="card__title">Import users from a CSV</h1>
+                        <h1 class="card__title"><?php echo _('Import users from a CSV'); ?></h1>
                         <div class="alert alert--info" role="alert">
                             <svg class="icon"><use href="#i-info"/></svg>
-                            <div>Choose a CSV file containing the user data to import.</div>
+                            <div><?php echo _('Choose a CSV file containing the user data to import.'); ?></div>
                         </div>
 
                         <?php if (isset($msgImport) and !empty($msgImport)) { ?>
-                            <div class="alert alert--<?= $alertImportType ?? 'warning' ?>" role="alert">
+                            <div class="alert alert--<?= htmlspecialchars($alertImportType ?? 'warning', ENT_QUOTES, 'UTF-8') ?>" role="alert">
                                 <svg class="icon"><use href="#i-alert"/></svg>
                                 <div><?= $msgImport; ?></div>
                             </div>
@@ -234,11 +239,11 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                         <?php if (!isset($_SESSION['csv_preview'])): ?>
                             <!-- CSV upload form -->
                             <div class="field">
-                                <label for="csvFile" class="label">CSV file</label>
+                                <label for="csvFile" class="label"><?php echo _('CSV file'); ?></label>
                                 <input type="file" name="csvFile" id="csvFile" class="input" accept=".csv" required />
                             </div>
                             <div class="field">
-                                <label for="csvSeparator" class="label">CSV separator</label>
+                                <label for="csvSeparator" class="label"><?php echo _('CSV separator'); ?></label>
                                 <select name="csvSeparator" id="csvSeparator" class="select">
                                     <option value=",">Comma (,)</option>
                                     <option value=";">Semicolon (;)</option>
@@ -247,34 +252,34 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                 </select>
                             </div>
                             <div class="field">
-                                <span class="label">CSV file format</span>
+                                <span class="label"><?php echo _('CSV file format'); ?></span>
                                 <label class="check">
                                     <input type="radio" name="csvHasHeaders" id="csvHasHeaders1" value="1" checked>
-                                    First line = headers (do not import)
+                                    <?php echo _('First line = headers (do not import)'); ?>
                                 </label>
                                 <label class="check mt-1">
                                     <input type="radio" name="csvHasHeaders" id="csvHasHeaders0" value="0">
-                                    First line = data (to import)
+                                    <?php echo _('First line = data (to import)'); ?>
                                 </label>
                             </div>
                             <div class="field">
-                                <input type="submit" name="csvUpload" class="btn btn--primary" value="Upload and analyze" />
+                                <input type="submit" name="csvUpload" class="btn btn--primary" value="<?php echo _('Upload and analyze'); ?>" />
                             </div>
                         <?php else: ?>
                             <div class="field">
-                                <h2 class="card__title" style="font-size:16px;">Column mapping</h2>
-                                <p class="hint">For each database field, select the matching column in your CSV.</p>
+                                <h2 class="card__title" style="font-size:16px;"><?php echo _('Column mapping'); ?></h2>
+                                <p class="hint"><?php echo _('For each database field, select the matching column in your CSV.'); ?></p>
 
                                 <!-- Button to switch CSV -->
                                 <div class="mb-3" style="text-align:right;">
-                                    <input type="submit" name="csvCancel" class="btn btn--outline" value="Change CSV file" />
+                                    <input type="submit" name="csvCancel" class="btn btn--outline" value="<?php echo _('Change CSV file'); ?>" />
                                 </div>
 
                                 <div class="table-wrap">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th colspan="2">Basic information</th>
+                                                <th colspan="2"><?php echo _('Basic information'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -282,8 +287,8 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Username</span></td>
                                                 <td>
                                                     <select name="db_mapping[username]" id="map_username" class="select" onchange="toggleCustomField('username')" required>
-                                                        <option value="algorithm">Use the algorithm (first letter of first name + last name)</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="algorithm"><?php echo _('Use the algorithm (first letter of first name + last name)'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
@@ -295,16 +300,16 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Last name</span></td>
                                                 <td>
                                                     <select name="db_mapping[last_name]" id="map_last_name" class="select" onchange="toggleCustomField('last_name')">
-                                                        <option value="">Not imported</option>
-                                                        <option value="autre">Other value...</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value=""><?php echo _('Not imported'); ?></option>
+                                                        <option value="other"><?php echo _('Other value...'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
                                                         </optgroup>
                                                     </select>
                                                     <div id="custom_last_name_div" class="mt-2" style="display: none;">
-                                                        <input type="text" name="custom_last_name" id="custom_last_name" class="input" placeholder="Last name">
+                                                        <input type="text" name="custom_last_name" id="custom_last_name" class="input" placeholder="<?php echo _('Last name'); ?>">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -312,16 +317,16 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">First name</span></td>
                                                 <td>
                                                     <select name="db_mapping[first_name]" id="map_first_name" class="select" onchange="toggleCustomField('first_name')">
-                                                        <option value="">Not imported</option>
-                                                        <option value="autre">Other value...</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value=""><?php echo _('Not imported'); ?></option>
+                                                        <option value="other"><?php echo _('Other value...'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
                                                         </optgroup>
                                                     </select>
                                                     <div id="custom_first_name_div" class="mt-2" style="display: none;">
-                                                        <input type="text" name="custom_first_name" id="custom_first_name" class="input" placeholder="First name">
+                                                        <input type="text" name="custom_first_name" id="custom_first_name" class="input" placeholder="<?php echo _('First name'); ?>">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -329,7 +334,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
                                         <thead>
                                             <tr>
-                                                <th colspan="2">Class</th>
+                                                <th colspan="2"><?php echo _('Class'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -337,9 +342,9 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Class</span></td>
                                                 <td>
                                                     <select name="db_mapping[class_name]" id="map_class_name" class="select" onchange="toggleCustomField('class_name')">
-                                                        <option value="">Not imported</option>
-                                                        <option value="autre">Other value...</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value=""><?php echo _('Not imported'); ?></option>
+                                                        <option value="other"><?php echo _('Other value...'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
@@ -347,7 +352,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                     </select>
                                                     <div id="custom_class_name_div" class="mt-2" style="display: none;">
                                                         <select name="custom_class_name" id="custom_class_name" class="select">
-                                                            <option value="">--- Select a class ---</option>
+                                                            <option value=""><?php echo _('--- Select a class ---'); ?></option>
                                                             <?php
                                                             $selectClasses = $db->query('SELECT name FROM classes');
                                                             while ($classes = $selectClasses->fetch()) {
@@ -362,7 +367,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
                                         <thead>
                                             <tr>
-                                                <th colspan="2">User settings</th>
+                                                <th colspan="2"><?php echo _('User settings'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -370,11 +375,11 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Grade</span></td>
                                                 <td>
                                                     <select name="db_mapping[grade]" id="map_grade" class="select">
-                                                        <option value="0">None (0)</option>
-                                                        <option value="1">Administrator (1)</option>
-                                                        <option value="2">Manager (2)</option>
-                                                        <option value="3">Assistant (3)</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="fixed:0"><?php echo _('None (0)'); ?></option>
+                                                        <option value="fixed:1"><?php echo _('Administrator (1)'); ?></option>
+                                                        <option value="fixed:2"><?php echo _('Manager (2)'); ?></option>
+                                                        <option value="fixed:3"><?php echo _('Assistant (3)'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
@@ -386,8 +391,9 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Rules</span></td>
                                                 <td>
                                                     <select name="db_mapping[rules_accepted]" id="map_rules" class="select">
-                                                        <option value="0">Use 0</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="fixed:0"><?php echo _('Use 0'); ?></option>
+                                                        <option value="fixed:1"><?php echo _('Use 1'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
@@ -399,8 +405,9 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Privacy</span></td>
                                                 <td>
                                                     <select name="db_mapping[privacy_accepted]" id="map_privacy_accepted" class="select">
-                                                        <option value="0">Use 0</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="fixed:0"><?php echo _('Use 0'); ?></option>
+                                                        <option value="fixed:1"><?php echo _('Use 1'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
@@ -413,15 +420,15 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td>
                                                     <select name="db_mapping[max_loans]" id="map_max_loans" class="select" onchange="toggleCustomField('max_loans')">
                                                         <option value="">Use 5</option>
-                                                        <option value="autre">Other value...</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="other"><?php echo _('Other value...'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
                                                         </optgroup>
                                                     </select>
                                                     <div id="custom_max_loans_div" class="mt-2" style="display: none;">
-                                                        <input type="number" name="custom_max_loans" id="custom_max_loans" class="input" min="1" placeholder="Maximum">
+                                                        <input type="number" name="custom_max_loans" id="custom_max_loans" class="input" min="1" placeholder="<?php echo _('Maximum'); ?>">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -429,7 +436,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
                                         <thead>
                                             <tr>
-                                                <th colspan="2">Authentication</th>
+                                                <th colspan="2"><?php echo _('Authentication'); ?></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -437,16 +444,16 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                                                 <td><span class="label">Password</span></td>
                                                 <td>
                                                     <select name="db_mapping[password]" id="map_password" class="select" onchange="toggleCustomField('password')">
-                                                        <option value="">Use "ChangeMe123!"</option>
-                                                        <option value="autre">Other value...</option>
-                                                        <optgroup label="CSV columns">
+                                                        <option value="fixed:default"><?php echo _('Use "ChangeMe123!"'); ?></option>
+                                                        <option value="other"><?php echo _('Other value...'); ?></option>
+                                                        <optgroup label="<?php echo _('CSV columns'); ?>">
                                                             <?php foreach ($_SESSION['csv_headers'] as $index => $header): ?>
                                                                 <option value="<?= $index ?>"><?= htmlspecialchars($header) ?></option>
                                                             <?php endforeach; ?>
                                                         </optgroup>
                                                     </select>
                                                     <div id="custom_password_div" class="mt-2" style="display: none;">
-                                                        <input type="text" name="custom_password" id="custom_password" class="input" placeholder="Password">
+                                                        <input type="password" name="custom_password" id="custom_password" class="input" placeholder="<?php echo _('Password'); ?>" autocomplete="new-password">
                                                     </div>
                                                 </td>
                                             </tr>
@@ -456,12 +463,12 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
                                 <div class="alert alert--info mt-3">
                                     <svg class="icon"><use href="#i-info"/></svg>
-                                    <div><small>Preview: <?= count($_SESSION['csv_preview']) ?> rows of <?= $_SESSION['total_rows'] ?> displayed.</small></div>
+                                    <div><small><?= sprintf(_('Preview: %1$d of %2$d rows displayed.'), count($_SESSION['csv_preview']), $_SESSION['total_rows']); ?></small></div>
                                 </div>
                             </div>
                             <div class="btn-group">
-                                <input type="submit" name="csvImport" class="btn btn--success" value="Import users" />
-                                <input type="submit" name="csvCancel" class="btn btn--secondary" value="Cancel" />
+                                <input type="submit" name="csvImport" class="btn btn--success" value="<?php echo _('Import users'); ?>" />
+                                <input type="submit" name="csvCancel" class="btn btn--secondary" value="<?php echo _('Cancel'); ?>" />
                             </div>
                         <?php endif; ?>
                     </div>
@@ -473,7 +480,7 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
                     const customDiv = document.getElementById(`custom_${field}_div`);
 
                     if (selectElement && customDiv) {
-                        if (selectElement.value === 'autre') {
+                        if (selectElement.value === 'other') {
                             customDiv.style.display = 'block';
                         } else {
                             customDiv.style.display = 'none';
@@ -484,17 +491,18 @@ if (!isset($_GET['tab']) or !in_array($_GET['tab'], ['database', 'classes', 'use
 
             <!-- Regenerate usernames -->
             <form method="POST">
+                <?= csrf_field(); ?>
                 <div class="card">
                     <div class="card__body">
-                        <h2 class="card__title">Regenerate usernames</h2>
+                        <h2 class="card__title"><?php echo _('Regenerate usernames'); ?></h2>
                         <?php if (isset($msgRegenUsernames)) { ?>
-                            <div class="alert alert--success" role="alert">
-                                <svg class="icon"><use href="#i-check"/></svg>
-                                <div><?php echo $msgRegenUsernames; ?></div>
+                            <div class="alert alert--<?= ($regenUsernamesSuccess ?? true) ? 'success' : 'danger' ?>" role="alert">
+                                <svg class="icon"><use href="<?= ($regenUsernamesSuccess ?? true) ? '#i-check' : '#i-alert' ?>"/></svg>
+                                <div><?= htmlspecialchars($msgRegenUsernames, ENT_QUOTES, 'UTF-8'); ?></div>
                             </div>
                         <?php } ?>
                         <div class="field">
-                            <button type="submit" name="regenUsernames" class="btn btn--primary">Regenerate usernames</button>
+                            <button type="submit" name="regenUsernames" class="btn btn--primary"><?php echo _('Regenerate usernames'); ?></button>
                         </div>
                     </div>
                 </div>

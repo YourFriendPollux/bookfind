@@ -7,6 +7,7 @@
 ?>
 
 <?php require_once __DIR__ . '/../../../actions/functions/sessionInit.php';
+require_once __DIR__ . '/../../../actions/functions/gettextFunction.php';
 require_once __DIR__ . '/../../../actions/users/securityAction.php';
 include '../actions/functions/gradeIntToText.php';
 
@@ -49,7 +50,7 @@ if (isset($_GET['s']) AND !empty($_GET['s'])) {
                         </div>
                     </div>
                     <div class="book-card__meta mt-3">
-                        <span class="chip"><?php if ($users['class_name'] === 'Aucune') { ?>No class<?php } else { ?><?= htmlspecialchars($users['class_name']); ?><?php } ?></span>
+                        <span class="chip"><?php if (in_array($users['class_name'], ['None', 'Aucune'], true)) { ?><?= _('No class'); ?><?php } else { ?><?= htmlspecialchars($users['class_name']); ?><?php } ?></span>
                         <?php if ($users['loans_count'] > 0) { ?><span class="chip"><?= htmlspecialchars($users['loans_count']) . ' ' . $loans; ?></span><?php } ?>
                         <?php Grade($users['grade']); ?>
                     </div>

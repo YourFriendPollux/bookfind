@@ -66,7 +66,7 @@ $topbarTitle = $titles[$currentPage] ?? 'Management';
         <svg class="icon"><use href="#i-tag"/></svg>Classes
       </a>
       <a class="sidebar__link <?php if ($currentPage == 'bookfind.php' && $tab == 'users') { echo 'is-active'; } ?>" href="bookfind.php?tab=users">
-        <svg class="icon"><use href="#i-upload"/></svg>Import CSV
+        <svg class="icon"><use href="#i-upload"/></svg><?php echo _('Import users and regenerate usernames'); ?>
       </a>
       <a class="sidebar__link <?php if ($currentPage == 'logs.php') { echo 'is-active'; } ?>" href="logs.php">
         <svg class="icon"><use href="#i-doc"/></svg>Logs
@@ -93,7 +93,7 @@ $topbarTitle = $titles[$currentPage] ?? 'Management';
   <button class="topbar__toggle" type="button" data-nav-toggle="sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Open menu">
     <svg class="icon"><use href="#i-menu"/></svg>
   </button>
-  <span class="topbar__title"><?= htmlspecialchars($topbarTitle); ?></span>
+  <span class="topbar__title"><?= htmlspecialchars(_($topbarTitle), ENT_QUOTES, 'UTF-8'); ?></span>
   <div class="topbar__right">
     <span class="topbar__user">
       <svg class="icon"><use href="#i-people"/></svg>

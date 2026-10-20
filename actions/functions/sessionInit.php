@@ -3,19 +3,18 @@
 // Sets secure cookie params, starts session, sends common security headers,
 // and enforces CSRF verification on POST requests.
 
-// Configure secure session cookie parameters
-$secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'domain' => '',
-    'secure' => $secure,
-    'httponly' => true,
-    'samesite' => 'Lax'
-]);
-ini_set('session.use_strict_mode', 1);
-
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    // Configure secure session cookie parameters before starting the session.
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    ini_set('session.use_strict_mode', 1);
     session_start();
 }
 
@@ -36,7 +35,8 @@ if (!headers_sent()) {
     header("Content-Security-Policy: default-src 'self'; script-src {$script_src}; style-src {$style_src}; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src {$connect_src};");
 }
 
-// Load CSRF helper functions (used to verify tokens in forms)
+// Load shared helpers before processing requests or rendering templates.
+require_once __DIR__ . '/gettextFunction.php';
 require_once __DIR__ . '/csrfFunction.php';
 
 // Verify CSRF token for all incoming POST requests.

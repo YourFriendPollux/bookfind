@@ -8,6 +8,7 @@
 
 <?php require 'actions/database.php';
 require 'actions/users/securityAction.php';
+require_once 'actions/functions/gettextFunction.php';
 require 'actions/functions/logFunction.php';
 if (isset($_GET['id']) and !empty($_GET['id'])) {
   require 'actions/users/showOneUserProfileAction.php';
@@ -74,7 +75,7 @@ require 'actions/functions/conversionDateHour.php'; ?>
               <div class="stat-strip__label">loans maximum</div>
             </div>
             <div class="stat-strip__item">
-              <div class="stat-strip__value" style="font-size:20px; line-height:1.2;"><?= htmlspecialchars($usersInfos['class_name'] === 'Aucune' ? '—' : $usersInfos['class_name']); ?></div>
+              <div class="stat-strip__value" style="font-size:20px; line-height:1.2;"><?= htmlspecialchars(in_array($usersInfos['class_name'], ['None', 'Aucune'], true) ? _('No class') : $usersInfos['class_name'], ENT_QUOTES, 'UTF-8'); ?></div>
               <div class="stat-strip__label">Class</div>
             </div>
           </div>
@@ -82,12 +83,12 @@ require 'actions/functions/conversionDateHour.php'; ?>
           <div class="card">
             <div class="card__header">
               <svg class="icon"><use href="#i-info"/></svg>
-              Informations
+              Information
             </div>
             <div class="card__body">
               <div class="kv">
                 <span class="kv__k">Class</span>
-                <span class="kv__v"><?php if ($usersInfos['class_name'] === 'Aucune') { ?>Not part of any class<?php } else { ?><?= htmlspecialchars($usersInfos['class_name']); ?><?php } ?></span>
+                <span class="kv__v"><?php if (in_array($usersInfos['class_name'], ['None', 'Aucune'], true)) { ?><?= _('Not part of any class'); ?><?php } else { ?><?= htmlspecialchars($usersInfos['class_name']); ?><?php } ?></span>
               </div>
               <div class="kv">
                 <span class="kv__k">Ongoing loans</span>

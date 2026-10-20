@@ -53,7 +53,7 @@
                     </div>
                     <?php if ($books['status'] == 1 && isset($_SESSION['auth']) AND $_SESSION['grade'] != 0) { ?>
                         <div class="book-card__author mt-2">
-                            Par <a href="../profile.php?id=<?= htmlspecialchars($loans['borrower_id']); ?>"><?= htmlspecialchars($loans['borrower_name']); ?></a> — retour le <?php ColorLoanDate($loans['due_date']); ?>
+                            <?= _('By'); ?> <a href="../profile.php?id=<?= htmlspecialchars($loans['borrower_id']); ?>"><?= htmlspecialchars($loans['borrower_name']); ?></a> — <?= _('due'); ?> <?php ColorLoanDate($loans['due_date']); ?>
                         </div>
                     <?php } ?>
                     <div class="book-card__foot">
